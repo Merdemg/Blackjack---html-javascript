@@ -1,0 +1,409 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<meta charset="utf-8" />
+	<title>BlackJack</title>
+	<style>
+		#stage {
+			width: 1024px;
+			height: 720px;
+			margin-left: auto;
+			margin-right: auto;
+			text-align: center;
+			font-size: 10px;
+			background-color: darkgreen;
+		}
+		h3 {
+			font-size: 25px;
+		}
+		h1 {
+		color: silver;
+		font-size: 50px;
+		position: relative;	
+		}
+	   #card {
+			position: relative;
+			top: 1px;
+			left: auto;
+			right: auto;
+
+	   }
+		#cardserie2 {
+			position:relative;
+			left: auto;
+			right: auto;
+		}
+		.cards {
+			margin: 5px;
+			padding: 5px;
+			width: 134px;
+			height: 190px;
+			cursor: pointer;
+			overflow: hidden;
+		}
+		.cardTop {
+			width: 100px;
+			height: 146px;
+		}
+		h4 {
+			color: white;
+			font-size: 15px;
+		}
+		h2 {
+			color: red;
+			position: relative;
+			margin-left: auto;
+			margin-right: auto;
+			font-size: 25px;
+		}
+		.button {
+			position: relative;
+		}
+		
+		.clear {
+		 clear: both;
+		}
+
+	</style>
+
+</head>
+<body>
+	<div id="stage">
+		<h1>BlackJack</h1>
+		<h4 id="bank">Player Bank</h4>
+		<h3>Player Hand:</h3>
+		<div id="card">
+			<a id="card1" class="cards"><img class="cardTop" id="Img1" src="data/52.png" /></a>
+			<a id="card2" class="cards"><img class="cardTop" id="Img2" src="data/52.png" /></a>
+			<a id="card3" class="cards"><img class="cardTop" id="Img3" src="data/52.png" /></a>
+			<a id="card4" class="cards"><img class="cardTop" id="Img4" src="data/52.png" /></a>
+			<a id="card5" class="cards"><img class="cardTop" id="Img5" src="data/52.png" /></a>
+			<a id="card6" class="cards"><img class="cardTop" id="Img6" src="data/52.png" /></a>
+			<a id="card7" class="cards"><img class="cardTop" id="Img7" src="data/52.png" /></a>
+			<a id="card8" class="cards"><img class="cardTop" id="Img8" src="data/52.png" /></a>
+			</div>
+		
+		<div class="clear"></div>
+		<br />
+		<br />
+		<br />
+		<br />
+		<button class="button" id="hitB" onclick="Hit()">HIT</button>
+		<button class="button" id="holdB" onclick="Hold()">HOLD</button>
+		<button class="button" id="rulesB" onclick="Rules()">RULES</button>
+		<button class="button" id="replayB" onclick="Replay()">REPLAY</button>
+
+		<h2 id="status">blablasb</h2>
+		<h3>Dealer Hand:</h3>
+		<div id="cardserie2">
+			<a id="card9" class="cards"><img class="cardTop" id="Img9" src="data/52.png" /></a>
+			<a id="card10" class="cards"><img class="cardTop" id="Img10" src="data/52.png" /></a>
+			<a id="card11" class="cards"><img class="cardTop" id="Img11" src="data/52.png" /></a>
+			<a id="card12" class="cards"><img class="cardTop" id="Img12" src="data/52.png" /></a>
+			<a id="card13" class="cards"><img class="cardTop" id="Img13" src="data/52.png" /></a>
+			<a id="card14" class="cards"><img class="cardTop" id="Img14" src="data/52.png" /></a>
+			<a id="card15" class="cards"><img class="cardTop" id="Img15" src="data/52.png" /></a>
+			<a id="card16" class="cards"><img class="cardTop" id="Img16" src="data/52.png" /></a>
+			</div>
+
+	</div>
+	
+</body>
+</html>
+<script>
+	var playerBank = 90;
+	var Deck = new Array();
+	var PlayerHand = new Array();
+	var DealerHand = new Array();
+	var playerHandValue = 0;
+	var dealerHandValue = 0;
+	var numOfAcesInPlayerH = 0;
+	var numOfAcesInDealerH = 0;
+	var y = 0;
+	var playerBJ = false;
+	var suitArray = ["Hearts", "Diamonds", "Clubs", "Spades"];
+	var faceArray = ["A", "2", "3", "4", "5", "6", "7", "8", "9", "10",
+					  "J", "Q", "K"];
+	var faceStrings = ["Ace", "Two", "Three", "Four", "Five", "Six",
+						"Seven", "Eight", "Nine", "Ten", "Jack",
+						"Queen", "King"];
+	var indexArray = new Array();
+	var nextCardNo = 3;
+	var playerTurn = new Boolean();
+	playerTurn = true;
+	var statusVar = document.getElementById("status");
+
+	updateBank();
+	buildDeck();
+	shuffle(Deck);
+	printDeck();
+	startGame();
+
+	function Replay() {
+		if (playerBank <10) {
+			window.alert("You are out of money!");
+		} else {
+			playerBank -= 10;
+			updateBank();
+
+			PlayerHand = new Array();
+			DealerHand = new Array();
+			playerHandValue = 0;
+			dealerHandValue = 0;
+			numOfAcesInPlayerH = 0;
+			numOfAcesInDealerH = 0;
+			y = 0;
+			playerBJ = false;
+			nextCardNo = 3;
+			playerTurn = true;
+
+			console.log("Deck length: " + Deck.length+"&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&");
+		if (Deck.length < 36) {
+			Deck = new Array();
+			buildDeck();
+			shuffle(Deck);
+		}
+		printDeck();
+		startGame();
+		}
+	}
+	function startGame() {
+		document.getElementById("replayB").style.display = "none";
+		document.getElementById("hitB").style.display = "inline";
+		document.getElementById("holdB").style.display = "inline";
+		drawFirstCard();
+		drawSecondCard();
+		drawThirdCard();
+		showStatus();
+		makeCardsInvisible();
+		checkForBJ();
+		checkForBust();
+	}
+	function updateBank() {
+		document.getElementById("bank").innerHTML = "Player chips: " + playerBank;
+	}
+	function Hold() {
+		document.getElementById("hitB").style.display = "none";
+		document.getElementById("holdB").style.display = "none";
+		if (playerTurn == true) {
+			playerTurn = !playerTurn;
+			nextCardNo = 10;
+			DealerAI();
+		}
+		else if (playerTurn == false) {
+			playerTurn = !playerTurn;
+		}
+		
+		console.log("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"+playerTurn);
+	}
+	function DealerAI() {
+		if (dealerHandValue < 17) {
+			console.log("AI hits!");
+			setTimeout(function () { Hit(); }, 700);
+			setTimeout(function () { DealerAI(); }, 1000);
+		} else {
+			endGame();
+		}
+	}
+	function endGame() {
+	console.log("Ending game");
+	console.log(statusVar.text);
+		if (playerBJ == true && playerHandValue > dealerHandValue) {
+			statusVar.innerHTML += "BlackJack! Player Wins!";
+			playerBank += 20;
+		} else if (playerHandValue > 21 && dealerHandValue > 21) {
+			statusVar.innerHTML += "Both player and dealer busted! Game is a tie!";
+			playerBank += 10;
+		} else if (playerHandValue > 21) {
+			statusVar.innerHTML += "Player busted! Dealer Wins!";
+		} else if (dealerHandValue > 21) {
+			statusVar.innerHTML += "Dealer busted! Player Wins!";
+			playerBank += 20;
+		} else if (playerHandValue > dealerHandValue) {
+			statusVar.innerHTML += "Player Wins!";
+			playerBank += 20;
+		} else if (playerHandValue == dealerHandValue) {
+			statusVar.innerHTML += "Game is Tie!";
+			playerBank += 10;
+		} else if (playerHandValue < dealerHandValue) {
+			statusVar.innerHTML += "Player lost!";
+		}
+		updateBank();
+		document.getElementById("replayB").style.display = "inline";
+
+	}
+	function checkForBJ() {
+		if (playerHandValue == 21) {
+			statusVar.innerHTML += " BlackJack!";
+			playerBJ = true;
+			Hold();
+		}
+
+	}
+	function makeCardsInvisible() {
+		console.log("making cards invisible");
+		for (var i = 0; i < 6; i++) {
+			console.log("making cards invisible");
+			document.getElementById("card" + (i + 3)).style.display = "none";
+		}
+		for (var i = 0; i < 7; i++) {
+			document.getElementById("card" + (i + 10)).style.display = "none";
+		}
+	}
+	function showStatus() {
+		statusVar.innerHTML = "Player Hand: " + playerHandValue + " Dealer Hand: " + dealerHandValue;
+
+	}
+	function Hit() {
+		console.log("Player turn bool: " + playerTurn);
+		var tempCard = Deck.pop();
+		document.getElementById("card" + nextCardNo).style.display = "inline";
+		var ImgID = document.getElementById("Img" + nextCardNo);
+		ImgID.src = tempCard.image;
+		if (playerTurn == true) {
+			if (tempCard.faceShort == "A") {
+				numOfAcesInPlayerH++;
+			}
+			playerHandValue += tempCard.pointVal;
+			PlayerHand.push(tempCard);
+			} else if (playerTurn == false) {
+			if (tempCard.faceShort == "A") {
+				numOfAcesInDealerH++;
+			}
+			dealerHandValue += tempCard.pointVal;
+			DealerHand.push(tempCard);
+		}
+		showStatus();
+		nextCardNo++;
+		checkForBust();
+	}
+	function checkForBust() { /// Add Ace possibility
+		switch (playerTurn) {
+			case true: {
+				if (playerHandValue > 21) {
+					if (numOfAcesInPlayerH > 0) {
+						numOfAcesInPlayerH--;
+						playerHandValue -= 10;
+					} else {
+						statusVar.innerHTML += " Player busted!"
+						Hold();
+					}
+				}
+			} break;
+			case false: {
+				if (dealerHandValue > 21) {
+					if (numOfAcesInDealerH > 0) {
+						numOfAcesInDealerH--;
+						dealerHandValue -= 10;
+					} else {
+						statusVar.innerHTML += " Player busted!"
+						Hold();
+					}
+				}
+
+
+				/*if (playerTurn == true) {
+					if (playerHandValue > 21) {
+						statusVar.innerHTML += " Player busted!"
+						Hold();
+					}
+				}
+				if (playerTurn == false) {
+					if (dealerHandValue > 21) {
+						statusVar.innerHTML += " Dealer busted!"
+						Hold();
+					}
+				}*/
+			} break;
+		}
+		showStatus();
+	}
+	function drawThirdCard() {
+		var tempCard = Deck.pop();
+		var ImgID = document.getElementById("Img9");
+		ImgID.src = tempCard.image;
+		if (tempCard.faceShort == "A") {
+			numOfAcesInDealerH++;
+		}
+		dealerHandValue = tempCard.pointVal;
+		DealerHand.push(tempCard);
+
+	}
+	function drawFirstCard() {
+		var tempCard = Deck.pop();
+		var ImgID = document.getElementById("Img1");
+		ImgID.src = tempCard.image;
+		if (tempCard.faceShort == "A") {
+			numOfAcesInPlayerH++;
+		}
+		playerHandValue = tempCard.pointVal;
+		PlayerHand.push(tempCard);
+	}
+	function drawSecondCard() {
+		var tempCard = Deck.pop();
+		var ImgID = document.getElementById("Img2");
+		ImgID.src = tempCard.image;
+		if (tempCard.faceShort == "A") {
+			numOfAcesInPlayerH++;
+		}
+		playerHandValue += tempCard.pointVal;
+		PlayerHand.push(tempCard);
+	}
+	function printDeck() {
+		for (i = 0; i < Deck.length; i++) {
+			console.log(Deck[i]);
+		}
+	}
+	function buildIndexArray() {
+		for (var i = 0; i < 52; i++)
+			indexArray.push(i);
+	}
+	function buildDeck() {
+		for (var i = 0; i < suitArray.length; i++) // Loop 4 times.
+		{
+			for (var j = 0; j < faceArray.length; j++) // Loop 13 times.
+			{
+				
+				var tempCard = new Object();
+				if (j == 0) {
+					tempCard.pointVal = 11;
+				}
+				else if (j > 9) {
+					tempCard.pointVal = 10
+				}
+				else {
+					tempCard.pointVal = (j + 1);
+				}
+				tempCard.suitName = suitArray[i];
+				tempCard.suitShort = suitArray[i][0];
+				tempCard.faceName = faceStrings[j];
+				tempCard.faceShort = faceArray[j];
+				tempCard.image = "data/" + y + ".png";
+				y++;
+				
+				Deck.push(tempCard);
+			}
+		}
+	}
+
+	function shuffle(array) {
+		console.log("****************EVERYDAY IM SHUFFLIN************************************************************");
+		var currentIndex = array.length, temporaryValue, randomIndex;
+
+		while (0 !== currentIndex) {
+
+			randomIndex = Math.floor(Math.random() * currentIndex);
+			currentIndex--;
+
+			temporaryValue = array[currentIndex];
+			array[currentIndex] = array[randomIndex];
+			array[randomIndex] = temporaryValue;
+		}
+		return array;
+	}
+	function Rules() {
+
+		window.alert("This is BlackJack. Try to hold as close to 21 points as possible. Don't go over 21 or you'll bust.\nDealer hits at 16 and stands at 17.\nBet is 10 chips. A win gets you double your bet and a tie returns you your original bet.\nGood luck.");
+	}
+</script>
